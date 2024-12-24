@@ -1,0 +1,91 @@
+name: GitHub Actions
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  release:
+    types:
+      - published
+
+jobs:
+  test:
+    name: test on Node.js v${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 18
+          - 20
+          - 22
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js v${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          # cache: npm # TODO Add this line if the projects has lock files (e.g. web apps)
+
+      # TODO Choose one of these
+      # - run: npm ci # If the project DOES have lock files in the repo (e.g. web apps)
+      # - run: npm install # If the project does NOT have lock files in the repo (e.g. npm packages)
+      - run: npm run build
+      - run: npm test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          # cache: npm # TODO Add this line if the projects has lock files (e.g. web apps)
+
+      # TODO Choose one of these
+      # - run: npm ci # If the project DOES have lock files in the repo (e.g. web apps)
+      # - run: npm install # If the project does NOT have lock files in the repo (e.g. npm packages)
+      - run: npm run lint
+
+  # ▼▼ TODO Add this section if the project is a web app ▼▼
+  deploy:
+    needs:
+      - test
+      - lint
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run deploy
+  # ▲▲ TODO Add this section if the project is a web app ▲▲
+
+  # ▼▼ TODO Add this section if the project is an npm package ▼▼
+  publish:
+    needs:
+      - test
+      - lint
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install # If the project does NOT have lock files in the repo (e.g. npm packages)
+      - run: npm run build
+
+      - name: Set npm auth token
+        run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_AUTH_TOKEN}}" > ~/.npmrc
+      - run: npm run release
+  # ▲▲ TODO Add this section if the project is an npm package ▲▲
