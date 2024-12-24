@@ -1,0 +1,35 @@
+{
+  "name": "ess",
+  "version": "0.1.0",
+  "description": "Wrapper for the JavaScript package managers: npm, yarn, pnpm, and bun",
+  "keywords": [
+    "npm",
+    "yarn",
+    "pnpm",
+    "bun",
+    "package-manager"
+  ],
+  "author": "Jumpei Ogawa (https://phanective.org)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": "./bin/ess.nu",
+  "scripts": {
+    "build": "vite build",
+    "lint": "eslint",
+    "test": "vitest run",
+    "release": "npm publish --access public --non-interactive"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@phanect/configs": "latest",
+    "@phanect/lint": "latest",
+    "@types/node": "^22.5.5",
+    "eslint": "^9.11.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.1"
+  },
+  "engines": {
+    "bun": "1.x"
+  }
+}

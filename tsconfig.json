@@ -1,0 +1,22 @@
+{
+  // TODO Replace config if required: frontend | nodejs | cloudflare
+  // TODO Add supplemental configs if required: jsx | npm | vite
+  "extends": "@phanect/configs/ts/frontend",
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.mjs",
+    "**/*.jsx"
+  ],
+  "exclude": [
+    "node_modules"
+    // TODO add the following directories if you use any framework(s)
+    // ".next",
+    // ".nuxt",
+    // .svelte-kit/
+    // .astro/
+    // "out",
+    // "dist",
+  ]
+}
